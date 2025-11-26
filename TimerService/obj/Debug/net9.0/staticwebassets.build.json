@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "xKXiNN5RsGDZRUFXPDhsSsUW5lQDFwgTj5LHSFSYKyk=",
+  "Source": "TimerService",
+  "BasePath": "_content/TimerService",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
