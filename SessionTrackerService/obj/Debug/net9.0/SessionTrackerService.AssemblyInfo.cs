@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SessionTrackerService")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+736e66c35bf9fa51f61f3398c490b0ab484ff2c8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+09e3657ffc508c5cac676c4b67726e5c318f9360")]
 [assembly: System.Reflection.AssemblyProductAttribute("SessionTrackerService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SessionTrackerService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
