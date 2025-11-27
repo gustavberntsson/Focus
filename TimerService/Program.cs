@@ -2,12 +2,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors(options =>
+builder.Services.AddCors(o =>
 {
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-    });
+    o.AddDefaultPolicy(p => p
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+    );
 });
 
 var app = builder.Build();
@@ -20,24 +21,24 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors();
 
-// In-memory timer storage
+// enkel in-memory timer
 Timer? currentTimer = null;
 
-// Start timer
-app.MapPost("/api/start", (StartRequest request) =>
+// start
+app.MapPost("/api/start", (StartRequest req) =>
 {
-    var minutes = request.Type switch
+    var minutes = req.Type switch
     {
         "pomodoro" => 25,
         "break" => 5,
         "deepwork" => 90,
-        _ => request.Minutes ?? 25
+        _ => req.Minutes ?? 25
     };
 
     currentTimer = new Timer
     {
         Id = Guid.NewGuid(),
-        Type = request.Type,
+        Type = req.Type,
         Minutes = minutes,
         Status = "running",
         StartedAt = DateTime.UtcNow,
@@ -47,7 +48,7 @@ app.MapPost("/api/start", (StartRequest request) =>
     return Results.Ok(currentTimer);
 });
 
-// Get current status
+// status
 app.MapGet("/api/status", () =>
 {
     if (currentTimer == null)
@@ -59,25 +60,25 @@ app.MapGet("/api/status", () =>
     return Results.Ok(new
     {
         timer = currentTimer,
-        secondsLeft = secondsLeft,
+        secondsLeft,
         minutesLeft = Math.Ceiling(secondsLeft / 60.0)
     });
 });
 
-// Stop timer
+// stop
 app.MapPost("/api/stop", () =>
 {
     if (currentTimer == null)
         return Results.BadRequest("No timer running");
 
     currentTimer.Status = "stopped";
-    var timer = currentTimer;
+    var t = currentTimer;
     currentTimer = null;
 
-    return Results.Ok(timer);
+    return Results.Ok(t);
 });
 
-// Pause timer
+// pause
 app.MapPost("/api/pause", () =>
 {
     if (currentTimer == null || currentTimer.Status != "running")
@@ -91,7 +92,7 @@ app.MapPost("/api/pause", () =>
     return Results.Ok(currentTimer);
 });
 
-// Resume timer
+// resume
 app.MapPost("/api/resume", () =>
 {
     if (currentTimer == null || currentTimer.Status != "paused")
@@ -105,7 +106,7 @@ app.MapPost("/api/resume", () =>
 
 app.Run();
 
-// Models
+// models
 public class Timer
 {
     public Guid Id { get; set; }

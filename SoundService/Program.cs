@@ -5,12 +5,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors(options =>
+builder.Services.AddCors(o =>
 {
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-    });
+    o.AddDefaultPolicy(p => p
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+    );
 });
 
 var app = builder.Build();
@@ -23,7 +24,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors();
 
-// Available sounds
+// available sounds
 var sounds = new List<Sound>
 {
     new Sound { Id = "rain", Name = "Rain", FilePath = "Sounds/Rain.mp3", Type = "nature" },
@@ -31,18 +32,18 @@ var sounds = new List<Sound>
     new Sound { Id = "whitenoise", Name = "White Noise", FilePath = "Sounds/WhiteNoise.mp3", Type = "noise" }
 };
 
-// Currently playing
+// currently playing
 IWavePlayer? currentPlayer = null;
 AudioFileReader? currentAudio = null;
 string? currentSoundId = null;
 
-// Get all available sounds
+// list sounds
 app.MapGet("/api/sounds", () =>
 {
     return Results.Ok(sounds);
 });
 
-// Play a sound
+// play sound
 app.MapPost("/api/sounds/play/{id}", (string id) =>
 {
     var sound = sounds.FirstOrDefault(s => s.Id == id);
@@ -54,17 +55,17 @@ app.MapPost("/api/sounds/play/{id}", (string id) =>
 
     try
     {
-        // Stop current sound if playing
+        // stop current sound if playing
         currentPlayer?.Stop();
         currentPlayer?.Dispose();
         currentAudio?.Dispose();
 
-        // Start new sound
+        // start new sound
         currentAudio = new AudioFileReader(sound.FilePath);
         currentPlayer = new WaveOutEvent();
         currentPlayer.Init(currentAudio);
-        
-        // Loop the sound
+
+        // loop track automatically
         currentPlayer.PlaybackStopped += (sender, args) =>
         {
             if (currentAudio != null)
@@ -77,7 +78,7 @@ app.MapPost("/api/sounds/play/{id}", (string id) =>
         currentPlayer.Play();
         currentSoundId = id;
 
-        return Results.Ok(new { message = $"Playing {sound.Name}", sound = sound });
+        return Results.Ok(new { message = $"Playing {sound.Name}", sound });
     }
     catch (Exception ex)
     {
@@ -85,7 +86,7 @@ app.MapPost("/api/sounds/play/{id}", (string id) =>
     }
 });
 
-// Stop current sound
+// stop sound
 app.MapPost("/api/sounds/stop", () =>
 {
     if (currentPlayer == null)
@@ -96,40 +97,41 @@ app.MapPost("/api/sounds/stop", () =>
     currentAudio?.Dispose();
     currentPlayer = null;
     currentAudio = null;
-    
-    var stoppedSound = currentSoundId;
+
+    var stopped = currentSoundId;
     currentSoundId = null;
 
-    return Results.Ok(new { message = $"Stopped playing", soundId = stoppedSound });
+    return Results.Ok(new { message = "Stopped playing", soundId = stopped });
 });
 
-// Get current playing status
+// status
 app.MapGet("/api/sounds/status", () =>
 {
     if (currentPlayer == null || currentSoundId == null)
         return Results.Ok(new { isPlaying = false });
 
     var sound = sounds.FirstOrDefault(s => s.Id == currentSoundId);
-    return Results.Ok(new 
-    { 
+    return Results.Ok(new
+    {
         isPlaying = true,
-        sound = sound,
+        sound,
         volume = currentPlayer.Volume
     });
 });
 
-// Set volume (0.0 to 1.0)
-app.MapPost("/api/sounds/volume", (VolumeRequest request) =>
+// volume 0.0 - 1.0
+app.MapPost("/api/sounds/volume", (VolumeRequest req) =>
 {
     if (currentPlayer == null)
         return Results.BadRequest("No sound is playing");
 
-    var volume = Math.Clamp(request.Volume, 0f, 1f);
+    var volume = Math.Clamp(req.Volume, 0f, 1f);
     currentPlayer.Volume = volume;
 
-    return Results.Ok(new { volume = volume });
+    return Results.Ok(new { volume });
 });
 
 app.Run();
 
+// request model
 public record VolumeRequest(float Volume);

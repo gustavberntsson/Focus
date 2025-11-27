@@ -5,21 +5,23 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors(options =>
+builder.Services.AddCors(o =>
 {
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-    });
+    o.AddDefaultPolicy(p => p
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+    );
 });
 
-// Add SQLite database
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=sessions.db"));
+// SQLite
+builder.Services.AddDbContext<AppDbContext>(opt =>
+    opt.UseSqlite("Data Source=sessions.db")
+);
 
 var app = builder.Build();
 
-// Create database if it doesn't exist
+// create DB if missing
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -34,27 +36,26 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors();
 
-// Log a session
-app.MapPost("/api/sessions", async (AppDbContext db, SessionRequest request) =>
+// log a session
+app.MapPost("/api/sessions", async (AppDbContext db, SessionRequest req) =>
 {
     var session = new Session
     {
         Id = Guid.NewGuid(),
-        Type = request.Type,
-        Minutes = request.Minutes,
-        StartedAt = request.StartedAt,
-        CompletedAt = request.CompletedAt,
-        WasCompleted = request.WasCompleted,
-        Notes = request.Notes
+        Type = req.Type,
+        Minutes = req.Minutes,
+        StartedAt = req.StartedAt,
+        CompletedAt = req.CompletedAt,
+        WasCompleted = req.WasCompleted,
+        Notes = req.Notes
     };
 
     db.Sessions.Add(session);
     await db.SaveChangesAsync();
-
     return Results.Ok(session);
 });
 
-// Get today's sessions
+// today's sessions
 app.MapGet("/api/sessions/today", async (AppDbContext db) =>
 {
     var today = DateTime.UtcNow.Date;
@@ -66,18 +67,18 @@ app.MapGet("/api/sessions/today", async (AppDbContext db) =>
     return Results.Ok(sessions);
 });
 
-// Get all sessions
+// all sessions (optional limit)
 app.MapGet("/api/sessions", async (AppDbContext db, int? limit) =>
 {
-    var query = db.Sessions.OrderByDescending(s => s.StartedAt);
-    var sessions = limit.HasValue 
-        ? await query.Take(limit.Value).ToListAsync()
-        : await query.ToListAsync();
+    var q = db.Sessions.OrderByDescending(s => s.StartedAt);
+    var sessions = limit.HasValue
+        ? await q.Take(limit.Value).ToListAsync()
+        : await q.ToListAsync();
 
     return Results.Ok(sessions);
 });
 
-// Get stats
+// stats
 app.MapGet("/api/stats", async (AppDbContext db) =>
 {
     var today = DateTime.UtcNow.Date;
@@ -91,21 +92,21 @@ app.MapGet("/api/stats", async (AppDbContext db) =>
         .Where(s => s.StartedAt >= weekAgo && s.WasCompleted)
         .ToListAsync();
 
-    var totalMinutesToday = todaySessions.Sum(s => s.Minutes);
-    var totalMinutesWeek = weekSessions.Sum(s => s.Minutes);
+    var minutesToday = todaySessions.Sum(s => s.Minutes);
+    var minutesWeek = weekSessions.Sum(s => s.Minutes);
 
     return Results.Ok(new
     {
         today = new
         {
             sessions = todaySessions.Count,
-            minutes = totalMinutesToday,
+            minutes = minutesToday,
             pomodoros = todaySessions.Count(s => s.Type == "pomodoro")
         },
         week = new
         {
             sessions = weekSessions.Count,
-            minutes = totalMinutesWeek,
+            minutes = minutesWeek,
             pomodoros = weekSessions.Count(s => s.Type == "pomodoro")
         }
     });
@@ -113,7 +114,7 @@ app.MapGet("/api/stats", async (AppDbContext db) =>
 
 app.Run();
 
-// Request model
+// request model
 public record SessionRequest(
     string Type,
     int Minutes,

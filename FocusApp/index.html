@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Focus</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .timer-display {
+      font-size: 96px;
+      font-weight: bold;
+      margin: 40px 0;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .timer-type {
+      font-size: 24px;
+      color: #64ffda;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      font-size: 16px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .timer-presets {
+      display: flex;
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .preset-btn {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px 25px;
+      font-size: 14px;
+    }
+
+    .preset-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .sounds {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .sounds h3 {
+      margin-bottom: 20px;
+      color: #64ffda;
+      font-size: 18px;
+    }
+
+    .sound-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .sound-btn {
+      background: rgba(100, 255, 218, 0.1);
+      border: 2px solid #64ffda;
+      color: #64ffda;
+      padding: 12px 30px;
+      font-size: 14px;
+    }
+
+    .sound-btn.active {
+      background: #64ffda;
+      color: #1a1a2e;
+    }
+
+    .stats {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px 25px;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+    }
+
+    .stats p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+
+    .status {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer-type" id="timerType">POMODORO</div>
+    <div class="timer-display" id="timerDisplay">25:00</div>
+    
+    <div class="timer-presets">
+      <button class="preset-btn" onclick="startTimer('pomodoro')">Pomodoro (25m)</button>
+      <button class="preset-btn" onclick="startTimer('break')">Break (5m)</button>
+      <button class="preset-btn" onclick="startTimer('deepwork')">Deep Work (90m)</button>
+    </div>
+
+    <div class="controls">
+      <button id="pauseBtn" onclick="pauseTimer()" disabled>Pause</button>
+      <button id="stopBtn" onclick="stopTimer()" disabled>Stop</button>
+    </div>
+
+    <div class="sounds">
+      <h3>Ambient Sounds</h3>
+      <div class="sound-buttons">
+        <button class="sound-btn" onclick="toggleSound('rain')">Rain</button>
+        <button class="sound-btn" onclick="toggleSound('waves')">Waves</button>
+        <button class="sound-btn" onclick="toggleSound('whitenoise')">White Noise</button>
+      </div>
+      <div class="status" id="status">Ready to focus</div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <p><strong>Today:</strong> <span id="todayStats">0 sessions</span></p>
+    <p><strong>This Week:</strong> <span id="weekStats">0 sessions</span></p>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
