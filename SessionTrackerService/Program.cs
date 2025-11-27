@@ -1,41 +1,124 @@
+using Microsoft.EntityFrameworkCore;
+using SessionTrackerService;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+    });
+});
+
+// Add SQLite database
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite("Data Source=sessions.db"));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Create database if it doesn't exist
+using (var scope = app.Services.CreateScope())
 {
-    app.MapOpenApi();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
 }
 
-app.UseHttpsRedirection();
-
-var summaries = new[]
+if (app.Environment.IsDevelopment())
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-app.MapGet("/weatherforecast", () =>
+app.UseCors();
+
+// Log a session
+app.MapPost("/api/sessions", async (AppDbContext db, SessionRequest request) =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    var session = new Session
+    {
+        Id = Guid.NewGuid(),
+        Type = request.Type,
+        Minutes = request.Minutes,
+        StartedAt = request.StartedAt,
+        CompletedAt = request.CompletedAt,
+        WasCompleted = request.WasCompleted,
+        Notes = request.Notes
+    };
+
+    db.Sessions.Add(session);
+    await db.SaveChangesAsync();
+
+    return Results.Ok(session);
+});
+
+// Get today's sessions
+app.MapGet("/api/sessions/today", async (AppDbContext db) =>
+{
+    var today = DateTime.UtcNow.Date;
+    var sessions = await db.Sessions
+        .Where(s => s.StartedAt >= today)
+        .OrderByDescending(s => s.StartedAt)
+        .ToListAsync();
+
+    return Results.Ok(sessions);
+});
+
+// Get all sessions
+app.MapGet("/api/sessions", async (AppDbContext db, int? limit) =>
+{
+    var query = db.Sessions.OrderByDescending(s => s.StartedAt);
+    var sessions = limit.HasValue 
+        ? await query.Take(limit.Value).ToListAsync()
+        : await query.ToListAsync();
+
+    return Results.Ok(sessions);
+});
+
+// Get stats
+app.MapGet("/api/stats", async (AppDbContext db) =>
+{
+    var today = DateTime.UtcNow.Date;
+    var weekAgo = today.AddDays(-7);
+
+    var todaySessions = await db.Sessions
+        .Where(s => s.StartedAt >= today && s.WasCompleted)
+        .ToListAsync();
+
+    var weekSessions = await db.Sessions
+        .Where(s => s.StartedAt >= weekAgo && s.WasCompleted)
+        .ToListAsync();
+
+    var totalMinutesToday = todaySessions.Sum(s => s.Minutes);
+    var totalMinutesWeek = weekSessions.Sum(s => s.Minutes);
+
+    return Results.Ok(new
+    {
+        today = new
+        {
+            sessions = todaySessions.Count,
+            minutes = totalMinutesToday,
+            pomodoros = todaySessions.Count(s => s.Type == "pomodoro")
+        },
+        week = new
+        {
+            sessions = weekSessions.Count,
+            minutes = totalMinutesWeek,
+            pomodoros = weekSessions.Count(s => s.Type == "pomodoro")
+        }
+    });
+});
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+// Request model
+public record SessionRequest(
+    string Type,
+    int Minutes,
+    DateTime StartedAt,
+    DateTime? CompletedAt,
+    bool WasCompleted,
+    string? Notes
+);

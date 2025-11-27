@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\gusta\\Focus\\TimerService\\TimerService.csproj": {}
+    "C:\\Users\\gusta\\focus\\TimerService\\TimerService.csproj": {}
   },
   "projects": {
-    "C:\\Users\\gusta\\Focus\\TimerService\\TimerService.csproj": {
+    "C:\\Users\\gusta\\focus\\TimerService\\TimerService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\gusta\\Focus\\TimerService\\TimerService.csproj",
+        "projectUniqueName": "C:\\Users\\gusta\\focus\\TimerService\\TimerService.csproj",
         "projectName": "TimerService",
-        "projectPath": "C:\\Users\\gusta\\Focus\\TimerService\\TimerService.csproj",
+        "projectPath": "C:\\Users\\gusta\\focus\\TimerService\\TimerService.csproj",
         "packagesPath": "C:\\Users\\gusta\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\gusta\\Focus\\TimerService\\obj\\",
+        "outputPath": "C:\\Users\\gusta\\focus\\TimerService\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

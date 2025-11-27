@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Hw32nOPdIis=",
+  "dgSpecHash": "f/Myaz9rr4M=",
   "success": true,
-  "projectFilePath": "C:\\Users\\gusta\\Focus\\TimerService\\TimerService.csproj",
+  "projectFilePath": "C:\\Users\\gusta\\focus\\TimerService\\TimerService.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\gusta\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.4\\microsoft.aspnetcore.openapi.9.0.4.nupkg.sha512",
     "C:\\Users\\gusta\\.nuget\\packages\\microsoft.extensions.apidescription.server\\9.0.0\\microsoft.extensions.apidescription.server.9.0.0.nupkg.sha512",

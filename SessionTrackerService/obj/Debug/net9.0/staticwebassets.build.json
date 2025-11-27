@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "aEg0rxSDaC2SM19VuyuIjHnJHwUZIzXYOPg2yu1yNck=",
+  "Source": "SessionTrackerService",
+  "BasePath": "_content/SessionTrackerService",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
