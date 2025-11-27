@@ -56,29 +56,53 @@ app.MapPost("/api/sounds/play/{id}", (string id) =>
     try
     {
         // stop current sound if playing
-        currentPlayer?.Stop();
-        currentPlayer?.Dispose();
-        currentAudio?.Dispose();
+        if (currentPlayer != null)
+        {
+            try
+            {
+                currentPlayer.Stop();
+                currentPlayer.Dispose();
+            }
+            catch { }
+            currentPlayer = null;
+        }
+        
+        if (currentAudio != null)
+        {
+            try
+            {
+                currentAudio.Dispose();
+            }
+            catch { }
+            currentAudio = null;
+        }
+
+        // small delay
+        System.Threading.Thread.Sleep(100);
 
         // start new sound
         currentAudio = new AudioFileReader(sound.FilePath);
         currentPlayer = new WaveOutEvent();
         currentPlayer.Init(currentAudio);
-
-        // loop track automatically
+        
+        // loop the sound
         currentPlayer.PlaybackStopped += (sender, args) =>
         {
-            if (currentAudio != null)
+            if (currentAudio != null && currentPlayer != null)
             {
-                currentAudio.Position = 0;
-                currentPlayer?.Play();
+                try
+                {
+                    currentAudio.Position = 0;
+                    currentPlayer.Play();
+                }
+                catch { }
             }
         };
 
         currentPlayer.Play();
         currentSoundId = id;
 
-        return Results.Ok(new { message = $"Playing {sound.Name}", sound });
+        return Results.Ok(new { message = $"Playing {sound.Name}", sound = sound });
     }
     catch (Exception ex)
     {
