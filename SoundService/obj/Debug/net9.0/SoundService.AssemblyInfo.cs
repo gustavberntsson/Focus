@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SoundService")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1541b89dfac16c66cabf2d093c26732f2ec7bc11")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1cc2a0feb4cbb7c18496f1c9782e809f2d3f1d5a")]
 [assembly: System.Reflection.AssemblyProductAttribute("SoundService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SoundService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

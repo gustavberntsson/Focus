@@ -32,3 +32,12 @@ C:\Users\gusta\focus\SoundService\obj\Debug\net9.0\refint\SoundService.dll
 C:\Users\gusta\focus\SoundService\obj\Debug\net9.0\SoundService.pdb
 C:\Users\gusta\focus\SoundService\obj\Debug\net9.0\SoundService.genruntimeconfig.cache
 C:\Users\gusta\focus\SoundService\obj\Debug\net9.0\ref\SoundService.dll
+C:\Users\gusta\Focus\SoundService\bin\Debug\net9.0\NAudio.dll
+C:\Users\gusta\Focus\SoundService\bin\Debug\net9.0\NAudio.Asio.dll
+C:\Users\gusta\Focus\SoundService\bin\Debug\net9.0\NAudio.Core.dll
+C:\Users\gusta\Focus\SoundService\bin\Debug\net9.0\NAudio.Midi.dll
+C:\Users\gusta\Focus\SoundService\bin\Debug\net9.0\NAudio.Wasapi.dll
+C:\Users\gusta\Focus\SoundService\bin\Debug\net9.0\NAudio.WinMM.dll
+C:\Users\gusta\Focus\SoundService\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\gusta\Focus\SoundService\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\gusta\Focus\SoundService\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\gusta\\focus\\SoundService\\SoundService.csproj": {}
+    "C:\\Users\\gusta\\Focus\\SoundService\\SoundService.csproj": {}
   },
   "projects": {
-    "C:\\Users\\gusta\\focus\\SoundService\\SoundService.csproj": {
+    "C:\\Users\\gusta\\Focus\\SoundService\\SoundService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\gusta\\focus\\SoundService\\SoundService.csproj",
+        "projectUniqueName": "C:\\Users\\gusta\\Focus\\SoundService\\SoundService.csproj",
         "projectName": "SoundService",
-        "projectPath": "C:\\Users\\gusta\\focus\\SoundService\\SoundService.csproj",
+        "projectPath": "C:\\Users\\gusta\\Focus\\SoundService\\SoundService.csproj",
         "packagesPath": "C:\\Users\\gusta\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\gusta\\focus\\SoundService\\obj\\",
+        "outputPath": "C:\\Users\\gusta\\Focus\\SoundService\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -53,6 +53,14 @@
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.4, )"
+            },
+            "NAudio": {
+              "target": "Package",
+              "version": "[2.2.1, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[10.0.1, )"
             }
           },
           "imports": [
